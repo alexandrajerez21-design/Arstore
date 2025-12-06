@@ -22,27 +22,79 @@ export default function App() {
 
         <section className="menu-grid">
 
+          {/* CAJA */}
           <article className="card">
             <div className="card-label">Caja</div>
             <h2 className="card-title">Venta rápida</h2>
             <p className="card-body">
-              Ideal para el día a día: escaneo de productos, selección manual y registro de la venta por método de pago.
+              Ideal para el día a día: escaneo de productos, selección manual
+              y registro de venta por método de pago.
             </p>
 
-            {/* 🔥 Cambiamos Button por Link a /venta */}
+            {/* 🔥 Botón que ahora abre /venta */}
             <Link to="/venta" className="btn-primary">Abrir venta rápida</Link>
 
             <div className="card-footer">
-              <span>📷 Escáner · ingreso manual</span>
+              <span>📷 Escáner · manual</span>
               <span>🧾 Boleta después</span>
             </div>
           </article>
 
+          {/* PEDIDOS */}
           <article className="card">
             <div className="card-label">Clientes</div>
             <h2 className="card-title">Pedidos online</h2>
             <p className="card-body">
-              Recepción de pedidos por encargo con stock disponible y retiro en tienda. 
-              Ideal para WhatsApp o página web.
+              Registro y control de pedidos con retiro en tienda.
+              Ideal para WhatsApp + catálogo web.
             </p>
-            <button className="btn-primary">Ver pedidos
+            <button className="btn-primary">Ver pedidos</button>
+            <div className="card-footer">
+              <span>📦 Retiro</span>
+              <span>🚀 Próximo módulo</span>
+            </div>
+          </article>
+
+          {/* INVENTARIO */}
+          <article className="card">
+            <div className="card-label">Inventario</div>
+            <h2 className="card-title">Stock & proveedores</h2>
+            <p className="card-body">
+              Control de productos, mínimos, alertas de quiebre y base de proveedores.
+            </p>
+            <button className="btn-primary">Gestionar inventario</button>
+            <div className="card-footer">
+              <span>🔍 Control stock</span>
+              <span>⚠ Alertas</span>
+            </div>
+          </article>
+
+          {/* REPORTES */}
+          <article className="card">
+            <div className="card-label">Gestión</div>
+            <h2 className="card-title">Reportes & ventas</h2>
+            <p className="card-body">
+              Ventas por período, filtrado por medio de pago.
+              Exportable en próximas versiones.
+            </p>
+            <button className="btn-primary">Ver reportes</button>
+            <div className="card-footer">
+              <span>📊 Estadísticas</span>
+              <span>📤 Exportar</span>
+            </div>
+          </article>
+
+        </section>
+
+        <footer className="app-footer">
+          ARstore · Minimarket A&R PRO · Versión base lista para crecer 🚀
+        </footer>
+      </div>
+
+      {/* 🔥 RUTAS REALES */}
+      <Routes>
+        <Route path="/venta" element={<VentaRapida />} />
+      </Routes>
+    </Router>
+  );
+}
