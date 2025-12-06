@@ -1,7 +1,303 @@
+:root {
+  --bg1: #17002b;
+  --bg2: #4b0082;
+  --bg3: #ff00ff;
+  --accent: #00e5ff;
+  --accent-soft: rgba(0, 229, 255, 0.12);
+  --card-bg: rgba(10, 10, 30, 0.9);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  background-color: #101010;
-  color: #ffffff;
-  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, var(--bg3) 0, transparent 45%),
+              radial-gradient(circle at bottom, var(--bg2) 0, #050510 55%);
+  color: #fff;
+}
+
+/* App layout */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.app-header {
   text-align: center;
+  margin-bottom: 20px;
+}
+
+.app-title {
+  font-size: 1.9rem;
+  margin: 0;
+}
+
+.app-badge {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.app-tagline {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+/* Resumen superior */
+.app-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+/* Grid de tarjetas */
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .menu-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+}
+
+.card-title {
+  font-size: 1.02rem;
+  font-weight: 600;
+}
+
+.card-body {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.card-footer {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+/* Botón principal */
+.btn-primary {
+  margin-top: 6px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #050510;
+  background: linear-gradient(135deg, #ff00ff, #00e5ff);
+  cursor: pointer;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Pie de página */
+.app-footer {
+  margin-top: 18px;
+  font-size: 0.7rem;
+  text-align: center;
+  opacity: 0.65;
+}:root {
+  --bg1: #17002b;
+  --bg2: #4b0082;
+  --bg3: #ff00ff;
+  --accent: #00e5ff;
+  --accent-soft: rgba(0, 229, 255, 0.12);
+  --card-bg: rgba(10, 10, 30, 0.9);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, var(--bg3) 0, transparent 45%),
+              radial-gradient(circle at bottom, var(--bg2) 0, #050510 55%);
+  color: #fff;
+}
+
+/* App layout */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.app-title {
+  font-size: 1.9rem;
+  margin: 0;
+}
+
+.app-badge {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.app-tagline {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+/* Resumen superior */
+.app-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+/* Grid de tarjetas */
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .menu-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+}
+
+.card-title {
+  font-size: 1.02rem;
+  font-weight: 600;
+}
+
+.card-body {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.card-footer {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+/* Botón principal */
+.btn-primary {
+  margin-top: 6px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #050510;
+  background: linear-gradient(135deg, #ff00ff, #00e5ff);
+  cursor: pointer;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Pie de página */
+.app-footer {
+  margin-top: 18px;
+  font-size: 0.7rem;
+  text-align: center;
+  opacity: 0.65;
 }
