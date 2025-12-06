@@ -1,9 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const STORAGE_KEY = "arstore-venta-rapida";
 
 export default function VentaRapida() {
-  const [productos, setProductos] = useState([]);
+  // -------------------------------
+  // 1) CARGAR DESDE LOCALSTORAGE
+  // -------------------------------
+  const [productos, setProductos] = useState(() => {
+    try {
+      const guardado = localStorage.getItem(STORAGE_KEY);
+      if (!guardado) return [];
+      const parsed = JSON.parse(guardado);
+      if (!Array.isArray(parsed)) return [];
+      return parsed;
+    } catch (e) {
+      console.error("Error leyendo venta rápida guardada", e);
+      return [];
+    }
+  });
+
   const [input, setInput] = useState("");
 
+  // -------------------------------
+  // 2) GUARDAR CADA VEZ QUE CAMBIE
+  // -------------------------------
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(productos));
+    } catch (e) {
+      console.error("Error guardando venta rápida", e);
+    }
+  }, [productos]);
+
+  // -------------------------------
+  // 3) LÓGICA DE VENTA
+  // -------------------------------
   function agregarProducto() {
     if (!input.trim()) return;
 
@@ -22,7 +53,11 @@ export default function VentaRapida() {
     } else {
       setProductos((prev) => [
         ...prev,
-        { nombre: input, cantidad: 1, precio: 1000 }, // ← Por ahora fijo, luego lo conectamos con inventario
+        {
+          nombre: input,
+          cantidad: 1,
+          precio: 1000, // Por ahora fijo, luego lo conectamos con inventario
+        },
       ]);
     }
 
@@ -35,8 +70,17 @@ export default function VentaRapida() {
 
   function limpiarVenta() {
     setProductos([]);
+    // También limpiamos el storage
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+      console.error("Error limpiando venta rápida guardada", e);
+    }
   }
 
+  // -------------------------------
+  // 4) INTERFAZ
+  // -------------------------------
   return (
     <div className="app">
       <h2 className="app-title">🧾 Venta rápida</h2>
