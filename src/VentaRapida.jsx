@@ -7,19 +7,23 @@ export default function VentaRapida() {
   function agregarProducto() {
     if (!input.trim()) return;
 
-    const yaExiste = productos.find(p => p.nombre.toLowerCase() === input.toLowerCase());
+    const yaExiste = productos.find(
+      (p) => p.nombre.toLowerCase() === input.toLowerCase()
+    );
 
     if (yaExiste) {
-      setProductos(prev =>
-        prev.map(p =>
+      setProductos((prev) =>
+        prev.map((p) =>
           p.nombre.toLowerCase() === input.toLowerCase()
             ? { ...p, cantidad: p.cantidad + 1 }
             : p
         )
       );
     } else {
-      setProductos(prev => [...prev, { nombre: input, cantidad: 1, precio: 1000 }]); 
-      // cambiar precio luego cuando tengamos stock real
+      setProductos((prev) => [
+        ...prev,
+        { nombre: input, cantidad: 1, precio: 1000 }, // ← Por ahora fijo, luego lo conectamos con inventario
+      ]);
     }
 
     setInput("");
@@ -36,25 +40,34 @@ export default function VentaRapida() {
   return (
     <div className="app">
       <h2 className="app-title">🧾 Venta rápida</h2>
-      <p>Escanea o escribe el producto, enter para agregar.</p>
+      <p>Escribe o escanea un producto y presiona Enter para agregar.</p>
 
       <input
         value={input}
-        onChange={e => setInput(e.target.value)}
-        onKeyDown={e => e.key === "Enter" && agregarProducto()}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && agregarProducto()}
         placeholder="Ej: Coca-Cola 350ml"
-        style={{ padding:"10px", width:"100%", marginTop:"10px", borderRadius:"8px" }}
+        style={{
+          padding: "10px",
+          width: "100%",
+          marginTop: "10px",
+          borderRadius: "8px",
+        }}
       />
 
-      <button className="btn-primary" onClick={agregarProducto} style={{marginTop:"10px"}}>
+      <button
+        className="btn-primary"
+        onClick={agregarProducto}
+        style={{ marginTop: "10px" }}
+      >
         Agregar
       </button>
 
-      <div style={{ marginTop:"15px" }}>
-        {productos.length === 0 && <p>No hay productos aún.</p>}
+      <div style={{ marginTop: "15px" }}>
+        {productos.length === 0 && <p>No hay productos todavía.</p>}
 
         {productos.map((p, i) => (
-          <div key={i} className="card" style={{marginBottom:"10px"}}>
+          <div key={i} className="card" style={{ marginBottom: "10px" }}>
             <div className="card-title">{p.nombre}</div>
             <div className="card-body">
               Cantidad: {p.cantidad} · Precio: ${p.precio}
@@ -68,8 +81,12 @@ export default function VentaRapida() {
 
       {productos.length > 0 && (
         <>
-          <h3 style={{marginTop:"20px"}}>Total: ${total()}</h3>
-          <button className="btn-primary" style={{marginTop:"10px"}} onClick={limpiarVenta}>
+          <h3 style={{ marginTop: "20px" }}>Total: ${total()}</h3>
+          <button
+            className="btn-primary"
+            style={{ marginTop: "10px" }}
+            onClick={limpiarVenta}
+          >
             Finalizar venta
           </button>
         </>
