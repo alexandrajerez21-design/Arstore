@@ -6,20 +6,23 @@ export default function App() {
     <Router>
       <div className="app">
 
+        {/* ---------- HEADER ---------- */}
         <header className="app-header">
-          <h1 className="app-title">Minimarket A&R PRO 🌌</h1>
-          <div className="app-badge">ARstore · Panel principal</div>
+          <h1 className="app-title">Minimarket A&R PRO 🚀</h1>
+          <div className="app-badge">Arstore · Panel principal</div>
           <p className="app-tagline">
             ¡Wow! Aquí comprar se siente distinto — todo lo que amas más cerca de ti 🌟🛒
           </p>
         </header>
 
+        {/* ---------- TAGS ---------- */}
         <section className="app-summary">
-          <span className="chip">🏪 Punto físico: A&R Minimarket</span>
+          <span className="chip">📍 Punto físico: A&R Minimarket</span>
           <span className="chip">💳 Métodos: Efectivo · Débito · Crédito</span>
           <span className="chip">🧾 Boleta disponible (futuro módulo)</span>
         </section>
 
+        {/* ---------- MENÚ PRINCIPAL ---------- */}
         <section className="menu-grid">
 
           {/* CAJA */}
@@ -27,31 +30,23 @@ export default function App() {
             <div className="card-label">Caja</div>
             <h2 className="card-title">Venta rápida</h2>
             <p className="card-body">
-              Ideal para el día a día: escaneo de productos, selección manual
-              y registro de venta por método de pago.
+              Ideal para el día a día: escaneo de productos, selección manual y registro.
             </p>
 
-            {/* 🔥 Botón que ahora abre /venta */}
             <Link to="/venta" className="btn-primary">Abrir venta rápida</Link>
-
             <div className="card-footer">
-              <span>📷 Escáner · manual</span>
-              <span>🧾 Boleta después</span>
+              <span>🔍 Escáner</span><span>🧾 Boleta después</span>
             </div>
           </article>
 
-          {/* PEDIDOS */}
+          {/* CLIENTES */}
           <article className="card">
             <div className="card-label">Clientes</div>
             <h2 className="card-title">Pedidos online</h2>
-            <p className="card-body">
-              Registro y control de pedidos con retiro en tienda.
-              Ideal para WhatsApp + catálogo web.
-            </p>
+            <p className="card-body">Recepción de pedidos con retiro en tienda.</p>
             <button className="btn-primary">Ver pedidos</button>
             <div className="card-footer">
-              <span>📦 Retiro</span>
-              <span>🚀 Próximo módulo</span>
+              <span>📦 Retiro</span><span>⏳ Próximo módulo</span>
             </div>
           </article>
 
@@ -59,42 +54,31 @@ export default function App() {
           <article className="card">
             <div className="card-label">Inventario</div>
             <h2 className="card-title">Stock & proveedores</h2>
-            <p className="card-body">
-              Control de productos, mínimos, alertas de quiebre y base de proveedores.
-            </p>
+            <p className="card-body">Control de productos y alertas de quiebre.</p>
             <button className="btn-primary">Gestionar inventario</button>
-            <div className="card-footer">
-              <span>🔍 Control stock</span>
-              <span>⚠ Alertas</span>
-            </div>
           </article>
 
           {/* REPORTES */}
           <article className="card">
             <div className="card-label">Gestión</div>
             <h2 className="card-title">Reportes & ventas</h2>
-            <p className="card-body">
-              Ventas por período, filtrado por medio de pago.
-              Exportable en próximas versiones.
-            </p>
+            <p className="card-body">Resumen por periodo, exportable.</p>
             <button className="btn-primary">Ver reportes</button>
-            <div className="card-footer">
-              <span>📊 Estadísticas</span>
-              <span>📤 Exportar</span>
-            </div>
           </article>
 
         </section>
 
+        {/* ---------- FOOTER ---------- */}
         <footer className="app-footer">
-          ARstore · Minimarket A&R PRO · Versión base lista para crecer 🚀
+          Arstore · Minimarket A&R PRO · Base lista para crecer 🚀
         </footer>
-      </div>
 
-      {/* 🔥 RUTAS REALES */}
-      <Routes>
-        <Route path="/venta" element={<VentaRapida />} />
-      </Routes>
+        {/* ---------- RUTAS ---------- */}
+        <Routes>
+          <Route path="/venta" element={<VentaRapida />} />
+        </Routes>
+
+      </div>
     </Router>
   );
 }
