@@ -1,77 +1,123 @@
+// src/VentaRapida.jsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { guardarVenta } from "./utils/guardarVentas";
+import { generarBoletaPDF } from "./utils/boletaPDF";
 
 export default function VentaRapida() {
   const [producto, setProducto] = useState("");
-  const [lista, setLista] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [precio, setPrecio] = useState("");
+  const [cantidad, setCantidad] = useState(1);
+  const [carrito, setCarrito] = useState([]);
 
-  const agregarProducto = () => {
-    if (!producto.trim()) return;
-
-    let precio = prompt("Ingrese precio del producto:");
-    precio = Number(precio);
-
+  const agregar = () => {
+    if (!producto.trim()) return alert("Ingresa nombre del producto");
     if (!precio || precio <= 0) return alert("Precio inválido");
 
-    const nuevo = { nombre: producto, precio, cantidad: 1 };
+    const item = {
+      nombre: producto,
+      precio: Number(precio),
+      cantidad: Number(cantidad)
+    };
 
-    setLista([...lista, nuevo]);
-    setTotal(total + precio);
+    setCarrito([...carrito, item]);
     setProducto("");
+    setPrecio("");
+    setCantidad(1);
   };
 
   const finalizarVenta = () => {
-    if (lista.length === 0) return alert("No hay productos registrados");
+    if (carrito.length === 0) return alert("Agrega productos primero");
 
-    guardarVenta(lista, total);
-    alert("Venta guardada con éxito ✨");
+    // calcula total
+    const total = carrito.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
 
-    setLista([]);
-    setTotal(0);
+    // guarda en Reportes
+    guardarVenta(
+      carrito.map(p => ({
+        nombre: p.nombre,
+        cantidad: p.cantidad,
+        precio: p.precio
+      }))
+    );
+
+    // genera boleta PDF
+    generarBoletaPDF(carrito, total);
+
+    alert("Venta finalizada ✔ Boleta generada");
+    setCarrito([]);
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "500px", margin: "auto" }}>
-      <Link to="/">⬅ Volver</Link>
-      <h2>🧾 Venta rápida</h2>
+    <div style={{ padding: "20px", maxWidth: "550px", margin: "auto", color: "white" }}>
+      
+      <Link to="/" style={{ color: "violet", fontWeight: "bold" }}>⬅ Volver al menú</Link>
+      <h2 style={{ marginTop: "15px" }}>🧾 Venta rápida</h2>
 
+      {/* ingreso de producto */}
       <input
         type="text"
-        placeholder="Ej: Coca-Cola 350ml"
+        placeholder="Nombre del producto"
         value={producto}
         onChange={(e) => setProducto(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && agregarProducto()}
-        style={{ width: "100%", padding: "10px", marginTop: "10px" }}
+        style={inputStyle}
       />
 
-      <button 
-        onClick={agregarProducto} 
-        style={{ marginTop: "10px", width: "100%", padding: "10px" }}
-      >
-        Agregar
-      </button>
+      <input
+        type="number"
+        placeholder="Precio"
+        value={precio}
+        onChange={(e) => setPrecio(e.target.value)}
+        style={inputStyle}
+      />
 
-      <div style={{ marginTop: "20px" }}>
-        {lista.length === 0 && <p>No hay productos aún.</p>}
+      <input
+        type="number"
+        placeholder="Cantidad"
+        value={cantidad}
+        min="1"
+        onChange={(e) => setCantidad(e.target.value)}
+        style={inputStyle}
+      />
 
-        {lista.map((item, i) => (
-          <div key={i} style={{ background: "#222", padding: "10px", marginTop: "10px" }}>
-            <strong>{item.nombre}</strong>
-            <p>Precio: ${item.precio}</p>
-          </div>
-        ))}
-      </div>
+      <button style={btn} onClick={agregar}>Agregar producto ➕</button>
 
-      <h3 style={{ marginTop: "20px" }}>Total: ${total}</h3>
+      <hr style={{ margin: "20px 0" }}/>
 
-      <button 
-        onClick={finalizarVenta} 
-        style={{ marginTop: "10px", width: "100%", padding: "10px", background: "purple", color: "white" }}
-      >
-        Finalizar venta
-      </button>
+      <h3>Carrito</h3>
+
+      {carrito.length === 0 && <p>No hay productos aún.</p>}
+
+      {carrito.map((p, i) => (
+        <div key={i} style={itemCard}>
+          <b>{p.nombre}</b>
+          <p>{p.cantidad} x ${p.precio}</p>
+        </div>
+      ))}
+
+      {/* botón final */}
+      {carrito.length > 0 && (
+        <button style={{ ...btn, background:"purple" }} onClick={finalizarVenta}>
+          Finalizar venta y generar boleta 🧾
+        </button>
+      )}
     </div>
   );
 }
+
+/* ——— estilos rápidos ——— */
+const btn = {
+  width:"100%", padding:"12px", 
+  background:"violet", border:"none", marginTop:"8px",
+  color:"white", fontWeight:"bold", borderRadius:"6px"
+};
+
+const inputStyle = {
+  width:"100%", padding:"10px", marginTop:"10px", 
+  borderRadius:"6px", border:"none"
+};
+
+const itemCard = {
+  background:"#1a1a1a", borderRadius:"6px",
+  padding:"10px", marginTop:"10px"
+};
