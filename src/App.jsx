@@ -1,97 +1,38 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import VentaRapida from "./VentaRapida";
-import "./styles.css";
+import VentaRapida from "./VentaRapida.jsx";
+import Inventario from "./Inventario.jsx";
 
 export default function App() {
   return (
     <Router>
       <div className="app">
 
-        {/* --- PANEL PRINCIPAL --- */}
         <header className="app-header">
           <h1 className="app-title">Minimarket A&R PRO 🛒</h1>
-          <div className="app-badge">ARstore · Panel principal</div>
-          <p className="app-tagline">
-            ¡Wow! Aquí comprar se siente distinto — todo lo que amas más cerca de ti ✨
-          </p>
+          <p>Panel principal del sistema</p>
         </header>
 
-        <section className="app-summary">
-          <span className="chip">📍 Punto físico: A&R Minimarket</span>
-          <span className="chip">💳 Métodos: Efectivo · Débito · Crédito</span>
-          <span className="chip">🧾 Boleta disponible (futuro módulo)</span>
-        </section>
+        {/* menú principal */}
+        <div className="menu-grid">
 
-        <section className="menu-grid">
+          <div className="card">
+            <h2>Venta rápida</h2>
+            <p>Registrar ventas rápidamente.</p>
+            <Link to="/venta" className="btn-primary">Abrir venta</Link>
+          </div>
 
-          {/* CAJA */}
-          <article className="card">
-            <div className="card-label">Caja</div>
-            <h2 className="card-title">Venta rápida</h2>
-            <p className="card-body">
-              Ideal para el día a día: escaneo de productos,
-              selección manual y registro de venta.
-            </p>
-            <Link to="/venta" className="btn-primary">Abrir venta rápida</Link>
-            <div className="card-footer">
-              <span>📷 Escáner · manual</span>
-              <span>🧾 Boleta después</span>
-            </div>
-          </article>
+          <div className="card">
+            <h2>Inventario</h2>
+            <p>Gestión de productos y precios.</p>
+            <Link to="/inventario" className="btn-primary">Gestionar</Link>
+          </div>
 
-          {/* PEDIDOS */}
-          <article className="card">
-            <div className="card-label">Clientes</div>
-            <h2 className="card-title">Pedidos online</h2>
-            <p className="card-body">
-              Registro y control de pedidos con retiro en tienda.
-              Ideal para WhatsApp o catálogo web.
-            </p>
-            <button className="btn-primary">Ver pedidos</button>
-            <div className="card-footer">
-              <span>🚗 Retiro</span>
-              <span>🧩 Próximo módulo</span>
-            </div>
-          </article>
+        </div>
 
-          {/* INVENTARIO */}
-          <article className="card">
-            <div className="card-label">Inventario</div>
-            <h2 className="card-title">Stock & proveedores</h2>
-            <p className="card-body">
-              Control de productos, mínimos, alertas de quiebre y base de proveedores.
-            </p>
-            <button className="btn-primary">Gestionar inventario</button>
-            <div className="card-footer">
-              <span>📦 Control stock</span>
-              <span>⚠️ Alertas</span>
-            </div>
-          </article>
-
-          {/* REPORTES */}
-          <article className="card">
-            <div className="card-label">Gestión</div>
-            <h2 className="card-title">Reportes & ventas</h2>
-            <p className="card-body">
-              Ventas por período, filtrado por método de pago.
-              Exportable en próximas versiones.
-            </p>
-            <button className="btn-primary">Ver reportes</button>
-            <div className="card-footer">
-              <span>📊 Estadísticas</span>
-              <span>📤 Exportar</span>
-            </div>
-          </article>
-
-        </section>
-
-        <footer className="app-footer">
-          ARstore · Minimarket A&R PRO · Versión base lista para crecer 🚀
-        </footer>
-
-        {/* 🔥 RUTAS */}
+        {/* rutas */}
         <Routes>
           <Route path="/venta" element={<VentaRapida />} />
+          <Route path="/inventario" element={<Inventario />} />
         </Routes>
 
       </div>
