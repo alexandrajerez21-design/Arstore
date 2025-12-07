@@ -2,26 +2,27 @@ import { useState } from "react";
 import { productosBase } from "./data/productos";
 
 export default function VentaRapida() {
+
   const [productos, setProductos] = useState([]);
   const [input, setInput] = useState("");
 
   function agregarProducto() {
     if (!input.trim()) return;
 
-    const productoDB = productosBase.find(
+    const encontrado = productosBase.find(
       (p) => p.nombre.toLowerCase() === input.toLowerCase()
     );
 
-    if (!productoDB) {
-      alert("❗ Producto no registrado. Agrégalo luego en Inventario.");
-      return;
+    if (!encontrado) {
+      alert("Producto no encontrado en inventario base.");
+      return setInput("");
     }
 
-    const repetido = productos.find(
+    const yaExiste = productos.find(
       (p) => p.nombre.toLowerCase() === input.toLowerCase()
     );
 
-    if (repetido) {
+    if (yaExiste) {
       setProductos((prev) =>
         prev.map((p) =>
           p.nombre.toLowerCase() === input.toLowerCase()
@@ -32,18 +33,20 @@ export default function VentaRapida() {
     } else {
       setProductos((prev) => [
         ...prev,
-        { nombre: productoDB.nombre, cantidad: 1, precio: productoDB.precio },
+        { nombre: encontrado.nombre, precio: encontrado.precio, cantidad: 1 },
       ]);
     }
 
     setInput("");
   }
 
+  function total() {
+    return productos.reduce((acc, p) => acc + p.cantidad * p.precio, 0);
+  }
+
   function limpiarVenta() {
     setProductos([]);
   }
-
-  const total = productos.reduce((acc, p) => acc + p.cantidad * p.precio, 0);
 
   return (
     <div className="app">
@@ -63,7 +66,11 @@ export default function VentaRapida() {
         }}
       />
 
-      <button className="btn-primary" onClick={agregarProducto} style={{ marginTop: "10px" }}>
+      <button
+        className="btn-primary"
+        onClick={agregarProducto}
+        style={{ marginTop: "10px" }}
+      >
         Agregar
       </button>
 
@@ -72,21 +79,30 @@ export default function VentaRapida() {
 
         {productos.map((p, i) => (
           <div key={i} className="card" style={{ marginBottom: "10px" }}>
-            <h3>{p.nombre}</h3>
-            <p>Cantidad: {p.cantidad} · Precio: ${p.precio}</p>
-            <p><b>Subtotal:</b> ${p.cantidad * p.precio}</p>
+            <div className="card-title">{p.nombre}</div>
+            <div className="card-body">
+              Cantidad: {p.cantidad} · Precio: ${p.precio}
+            </div>
+            <div className="card-footer">
+              Subtotal: ${p.cantidad * p.precio}
+            </div>
           </div>
         ))}
-
-        {productos.length > 0 && (
-          <>
-            <h3 style={{ marginTop: "20px" }}>Total: ${total}</h3>
-            <button className="btn-primary" style={{ marginTop: "10px" }} onClick={limpiarVenta}>
-              Finalizar venta
-            </button>
-          </>
-        )}
       </div>
+
+      {productos.length > 0 && (
+        <>
+          <h3 style={{ marginTop: "20px" }}>Total: ${total()}</h3>
+
+          <button
+            className="btn-primary"
+            style={{ marginTop: "10px" }}
+            onClick={limpiarVenta}
+          >
+            Finalizar venta
+          </button>
+        </>
+      )}
     </div>
   );
 }
