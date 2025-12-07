@@ -1,12 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import VentaRapida from "./VentaRapida.jsx";
+import VentaRapida from "./VentaRapida";
 
 export default function App() {
   return (
     <Router>
       <div className="app">
 
-        {/* 🔹 HEADER */}
         <header className="app-header">
           <h1 className="app-title">Minimarket A&R PRO 🛒</h1>
           <div className="app-badge">ARstore · Panel principal</div>
@@ -15,85 +14,58 @@ export default function App() {
           </p>
         </header>
 
-        {/* 🔹 CHIPS DE INFORMACIÓN */}
         <section className="app-summary">
           <span className="chip">📍 Punto físico: A&R Minimarket</span>
           <span className="chip">💳 Métodos: Efectivo · Débito · Crédito</span>
           <span className="chip">🧾 Boleta disponible (futuro módulo)</span>
         </section>
 
-        {/* 🔹 MENÚ PRINCIPAL */}
         <section className="menu-grid">
 
-          {/* Caja / Venta rápida */}
+          {/* MODULO CAJA */}
           <article className="card">
             <div className="card-label">Caja</div>
             <h2 className="card-title">Venta rápida</h2>
             <p className="card-body">
-              Ideal para el día a día: escaneo de productos, selección manual y registro de venta.
+              Registro rápido de ventas con productos automáticos, lectura manual o scanner.
             </p>
-
-            {/* Cambia Button por Link para abrir la ruta */}
             <Link to="/venta" className="btn-primary">Abrir venta rápida</Link>
-
-            <div className="card-footer">
-              <span>📷 Escáner · manual</span>
-              <span>🧾 Boleta después</span>
-            </div>
           </article>
 
-          {/* Clientes */}
+          {/* FUTURO MÓDULO */}
           <article className="card">
             <div className="card-label">Clientes</div>
             <h2 className="card-title">Pedidos online</h2>
-            <p className="card-body">
-              Registro y control de pedidos con retiro en tienda.
-              Ideal para WhatsApp o catálogo web.
-            </p>
+            <p className="card-body">Módulo en desarrollo</p>
             <button className="btn-primary">Ver pedidos</button>
-            <div className="card-footer">
-              <span>📦 Retiro</span> · <span>🚀 Próximo módulo</span>
-            </div>
           </article>
 
-          {/* Inventario */}
           <article className="card">
             <div className="card-label">Inventario</div>
-            <h2 className="card-title">Stock & proveedores</h2>
-            <p className="card-body">
-              Control de productos, mínimos, alertas de quiebre y proveedores.
-            </p>
+            <h2 className="card-title">Stock & Proveedores</h2>
+            <p className="card-body">Módulo en desarrollo</p>
             <button className="btn-primary">Gestionar inventario</button>
-            <div className="card-footer">
-              <span>📊 Control stock</span> · <span>⚠ Alertas</span>
-            </div>
           </article>
 
-          {/* Reportes */}
           <article className="card">
             <div className="card-label">Gestión</div>
-            <h2 className="card-title">Reportes & ventas</h2>
-            <p className="card-body">
-              Ventas por período, filtrado por método de pago.
-              Exportable en próximas versiones.
-            </p>
+            <h2 className="card-title">Reportes & Ventas</h2>
+            <p className="card-body">Módulo en desarrollo</p>
             <button className="btn-primary">Ver reportes</button>
-            <div className="card-footer">
-              <span>📈 Estadísticas</span> · <span>📥 Exportar</span>
-            </div>
           </article>
+
         </section>
 
-        {/* 🔹 FOOTER */}
         <footer className="app-footer">
-          ARstore · Minimarket A&R PRO · Versión base lista para crecer 🚀
+          ARstore · Minimarket A&R PRO · Base lista para crecer 🚀
         </footer>
       </div>
 
-      {/* 🔹 RUTAS DEL SISTEMA */}
+      {/* RUTAS */}
       <Routes>
         <Route path="/venta" element={<VentaRapida />} />
       </Routes>
+
     </Router>
   );
 }
