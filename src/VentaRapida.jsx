@@ -1,48 +1,27 @@
-import { useState, useEffect } from "react";
-
-const STORAGE_KEY = "arstore-venta-rapida";
+import { useState } from "react";
+import { productosBase } from "./data/productos";
 
 export default function VentaRapida() {
-  // -------------------------------
-  // 1) CARGAR DESDE LOCALSTORAGE
-  // -------------------------------
-  const [productos, setProductos] = useState(() => {
-    try {
-      const guardado = localStorage.getItem(STORAGE_KEY);
-      if (!guardado) return [];
-      const parsed = JSON.parse(guardado);
-      if (!Array.isArray(parsed)) return [];
-      return parsed;
-    } catch (e) {
-      console.error("Error leyendo venta rápida guardada", e);
-      return [];
-    }
-  });
-
+  const [productos, setProductos] = useState([]);
   const [input, setInput] = useState("");
 
-  // -------------------------------
-  // 2) GUARDAR CADA VEZ QUE CAMBIE
-  // -------------------------------
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(productos));
-    } catch (e) {
-      console.error("Error guardando venta rápida", e);
-    }
-  }, [productos]);
-
-  // -------------------------------
-  // 3) LÓGICA DE VENTA
-  // -------------------------------
   function agregarProducto() {
     if (!input.trim()) return;
 
-    const yaExiste = productos.find(
+    const productoDB = productosBase.find(
       (p) => p.nombre.toLowerCase() === input.toLowerCase()
     );
 
-    if (yaExiste) {
+    if (!productoDB) {
+      alert("❗ Producto no registrado. Agrégalo luego en Inventario.");
+      return;
+    }
+
+    const repetido = productos.find(
+      (p) => p.nombre.toLowerCase() === input.toLowerCase()
+    );
+
+    if (repetido) {
       setProductos((prev) =>
         prev.map((p) =>
           p.nombre.toLowerCase() === input.toLowerCase()
@@ -53,34 +32,19 @@ export default function VentaRapida() {
     } else {
       setProductos((prev) => [
         ...prev,
-        {
-          nombre: input,
-          cantidad: 1,
-          precio: 1000, // Por ahora fijo, luego lo conectamos con inventario
-        },
+        { nombre: productoDB.nombre, cantidad: 1, precio: productoDB.precio },
       ]);
     }
 
     setInput("");
   }
 
-  function total() {
-    return productos.reduce((acc, p) => acc + p.cantidad * p.precio, 0);
-  }
-
   function limpiarVenta() {
     setProductos([]);
-    // También limpiamos el storage
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch (e) {
-      console.error("Error limpiando venta rápida guardada", e);
-    }
   }
 
-  // -------------------------------
-  // 4) INTERFAZ
-  // -------------------------------
+  const total = productos.reduce((acc, p) => acc + p.cantidad * p.precio, 0);
+
   return (
     <div className="app">
       <h2 className="app-title">🧾 Venta rápida</h2>
@@ -90,7 +54,7 @@ export default function VentaRapida() {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && agregarProducto()}
-        placeholder="Ej: Coca-Cola 350ml"
+        placeholder="Ej: Coca Cola 3lts"
         style={{
           padding: "10px",
           width: "100%",
@@ -99,11 +63,7 @@ export default function VentaRapida() {
         }}
       />
 
-      <button
-        className="btn-primary"
-        onClick={agregarProducto}
-        style={{ marginTop: "10px" }}
-      >
+      <button className="btn-primary" onClick={agregarProducto} style={{ marginTop: "10px" }}>
         Agregar
       </button>
 
@@ -112,29 +72,21 @@ export default function VentaRapida() {
 
         {productos.map((p, i) => (
           <div key={i} className="card" style={{ marginBottom: "10px" }}>
-            <div className="card-title">{p.nombre}</div>
-            <div className="card-body">
-              Cantidad: {p.cantidad} · Precio: ${p.precio}
-            </div>
-            <div className="card-footer">
-              Subtotal: ${p.cantidad * p.precio}
-            </div>
+            <h3>{p.nombre}</h3>
+            <p>Cantidad: {p.cantidad} · Precio: ${p.precio}</p>
+            <p><b>Subtotal:</b> ${p.cantidad * p.precio}</p>
           </div>
         ))}
-      </div>
 
-      {productos.length > 0 && (
-        <>
-          <h3 style={{ marginTop: "20px" }}>Total: ${total()}</h3>
-          <button
-            className="btn-primary"
-            style={{ marginTop: "10px" }}
-            onClick={limpiarVenta}
-          >
-            Finalizar venta
-          </button>
-        </>
-      )}
+        {productos.length > 0 && (
+          <>
+            <h3 style={{ marginTop: "20px" }}>Total: ${total}</h3>
+            <button className="btn-primary" style={{ marginTop: "10px" }} onClick={limpiarVenta}>
+              Finalizar venta
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
