@@ -1,58 +1,56 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 
 export default function Reportes() {
   const [ventas, setVentas] = useState([]);
 
-  // Cargar ventas guardadas
   useEffect(() => {
-    const data = localStorage.getItem("ventas_arstore");
+    const data = localStorage.getItem("ventas");
     if (data) setVentas(JSON.parse(data));
   }, []);
 
-  function totalDelDia() {
-    return ventas.reduce((acc, v) => acc + v.total, 0);
-  }
-
-  function limpiarHistorial() {
-    if (confirm("¿Borrar todas las ventas registradas?")) {
-      localStorage.removeItem("ventas_arstore");
-      setVentas([]);
+  function exportarExcel() {
+    if (ventas.length === 0) {
+      alert("No hay ventas para exportar");
+      return;
     }
+
+    const hoja = ventas.map((v, i) => ({
+      "#": i + 1,
+      Producto: v.nombre,
+      Cantidad: v.cantidad,
+      PrecioUnitario: "$" + v.precio,
+      Total: "$" + v.total,
+      Fecha: v.fecha
+    }));
+
+    const libro = XLSX.utils.book_new();
+    const hojaExcel = XLSX.utils.json_to_sheet(hoja);
+    XLSX.utils.book_append_sheet(libro, hojaExcel, "Ventas");
+
+    XLSX.writeFile(libro, "ventas_minimarket.xlsx");
   }
 
   return (
-    <div className="app">
-      <h2 className="app-title">📊 Reportes & Ventas</h2>
-      <p>Historial de transacciones realizadas en el sistema.</p>
+    <div style={{ padding: "20px" }}>
+      <h2>📊 Reportes de ventas</h2>
+      <p>Historial guardado en el sistema.</p>
 
-      {ventas.length === 0 && <p style={{ marginTop: "20px" }}>No hay ventas registradas aún.</p>}
+      <button onClick={exportarExcel}
+        className="btn-primary"
+        style={{ marginBottom: "15px" }}>
+        📥 Exportar a Excel
+      </button>
 
-      {ventas.length > 0 && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Total vendido hoy: <strong>${totalDelDia()}</strong></h3>
+      {ventas.length === 0 && <p>No hay ventas registradas aún.</p>}
 
-          {ventas.map((v, i) => (
-            <div key={i} className="card" style={{ marginTop: "12px" }}>
-              <div className="card-title">Venta #{i + 1}</div>
-              <div className="card-body">
-                Fecha: {v.fecha}<br />
-                Total: <strong>${v.total}</strong>
-              </div>
-              <div className="card-footer">
-                {v.items.map((p, j) => (
-                  <div key={j}>
-                    {p.nombre} — {p.cantidad} x ${p.precio} = ${p.cantidad * p.precio}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-
-          <button className="btn-primary" style={{ marginTop: "20px" }} onClick={limpiarHistorial}>
-            Borrar historial 🗑
-          </button>
+      {ventas.map((v, i) => (
+        <div key={i} className="card" style={{ marginBottom: "10px" }}>
+          <p><b>{v.nombre}</b> — {v.cantidad}u — ${v.precio} c/u</p>
+          <p>Total: ${v.total}</p>
+          <p style={{ fontSize: "12px", opacity: .6 }}>{v.fecha}</p>
         </div>
-      )}
+      ))}
     </div>
   );
 }
