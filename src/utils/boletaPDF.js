@@ -1,46 +1,20 @@
-// src/utils/boletaPDF.js
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { jsPDF } from "jspdf";
 
-/**
- * Generar boleta PDF
- * @param {Array} productos - [{nombre, precio, cantidad}]
- * @param {Number} total
- */
-export function generarBoletaPDF(productos, total) {
+export function generarBoletaPDF(venta) {
   const doc = new jsPDF();
 
-  // Encabezado
   doc.setFontSize(18);
-  doc.text("🛒 Minimarket A&R PRO", 14, 15);
+  doc.text("🧾 Boleta de venta - Minimarket A&R", 10, 15);
 
   doc.setFontSize(12);
-  doc.text("Comprobante de compra", 14, 22);
-  doc.text(`Fecha: ${new Date().toLocaleString()}`, 14, 30);
+  doc.text(`Fecha: ${new Date().toLocaleString()}`, 10, 30);
+  doc.text(`Total: $${venta.total}`, 10, 40);
 
-  // Productos
-  const filas = productos.map(p => [
-    p.nombre,
-    p.cantidad,
-    "$" + p.precio,
-    "$" + p.cantidad * p.precio,
-  ]);
+  doc.text("Productos:", 10, 55);
 
-  doc.autoTable({
-    head: [["Producto", "Cant.", "Precio", "Subtotal"]],
-    body: filas,
-    startY: 40,
+  venta.items.forEach((item, i) => {
+    doc.text(`${i + 1}. ${item.nombre} - $${item.precio}`, 10, 70 + i * 8);
   });
 
-  // Total
-  doc.setFontSize(14);
-  doc.text(`TOTAL: $${total}`, 14, doc.lastAutoTable.finalY + 10);
-
-  // Pie de página
-  doc.setFontSize(10);
-  doc.text("Gracias por su compra 💜", 14, doc.lastAutoTable.finalY + 20);
-  doc.text("ARstore · Sistema de Caja", 14, doc.lastAutoTable.finalY + 25);
-
-  // Descargar
-  doc.save("boleta_ARstore.pdf");
+  doc.save(`boleta_ARstore_${Date.now()}.pdf`);
 }
