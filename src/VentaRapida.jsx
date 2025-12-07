@@ -1,123 +1,110 @@
-// src/VentaRapida.jsx
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { guardarVenta } from "./utils/guardarVentas";
-import { generarBoletaPDF } from "./utils/boletaPDF";
+import { useState, useEffect } from "react";
+import { generarBoletaPDF } from "./utils/boletaPDF"; 
+import { guardarVenta, obtenerVentas } from "./data/productos";
+import * as XLSX from "xlsx";
 
 export default function VentaRapida() {
   const [producto, setProducto] = useState("");
-  const [precio, setPrecio] = useState("");
-  const [cantidad, setCantidad] = useState(1);
   const [carrito, setCarrito] = useState([]);
+  const [total, setTotal] = useState(0);
 
-  const agregar = () => {
-    if (!producto.trim()) return alert("Ingresa nombre del producto");
-    if (!precio || precio <= 0) return alert("Precio inválido");
+  // Cargar historial si existe
+  useEffect(() => {
+    const ventasPrevias = obtenerVentas();
+    if (ventasPrevias?.length > 0) console.log("Ventas guardadas:", ventasPrevias);
+  }, []);
 
-    const item = {
+  // Agregar producto al carrito
+  const agregarProducto = () => {
+    if (!producto.trim()) return;
+
+    const nuevo = {
+      id: Date.now(),
       nombre: producto,
-      precio: Number(precio),
-      cantidad: Number(cantidad)
+      precio: 1000, // Luego será editable
+      cantidad: 1
     };
 
-    setCarrito([...carrito, item]);
+    const actualizado = [...carrito, nuevo];
+    setCarrito(actualizado);
+    setTotal(actualizado.reduce((acc, p) => acc + p.precio * p.cantidad, 0));
     setProducto("");
-    setPrecio("");
-    setCantidad(1);
   };
 
+  // Finalizar venta y guardar historial
   const finalizarVenta = () => {
-    if (carrito.length === 0) return alert("Agrega productos primero");
+    if (carrito.length === 0) return alert("No hay productos en la venta");
 
-    // calcula total
-    const total = carrito.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
+    const venta = {
+      id: Date.now(),
+      fecha: new Date().toLocaleString(),
+      productos: carrito,
+      total
+    };
 
-    // guarda en Reportes
-    guardarVenta(
-      carrito.map(p => ({
-        nombre: p.nombre,
-        cantidad: p.cantidad,
-        precio: p.precio
-      }))
-    );
-
-    // genera boleta PDF
+    guardarVenta(venta);
     generarBoletaPDF(carrito, total);
 
-    alert("Venta finalizada ✔ Boleta generada");
+    alert("Venta guardada y boleta generada");
     setCarrito([]);
+    setTotal(0);
+  };
+
+  // Exportar historial completo a Excel
+  const exportarExcel = () => {
+    const ventas = obtenerVentas();
+    if (!ventas.length) return alert("Aún no hay ventas guardadas");
+
+    const wb = XLSX.utils.book_new();
+    const data = ventas.map(v => ({
+      ID: v.id,
+      Fecha: v.fecha,
+      Productos: v.productos.map(p => `${p.nombre} x${p.cantidad}`).join(", "),
+      Total: v.total
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, "Ventas");
+    XLSX.writeFile(wb, "ventas_ARstore.xlsx");
+
+    alert("Reporte Excel exportado 📄");
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "550px", margin: "auto", color: "white" }}>
-      
-      <Link to="/" style={{ color: "violet", fontWeight: "bold" }}>⬅ Volver al menú</Link>
-      <h2 style={{ marginTop: "15px" }}>🧾 Venta rápida</h2>
+    <div className="page">
+      <h2>🧾 Venta rápida</h2>
+      <p>Ingresa o escanea un producto y presiona Agregar.</p>
 
-      {/* ingreso de producto */}
       <input
         type="text"
-        placeholder="Nombre del producto"
+        placeholder="Ej: Coca-Cola 350ml"
         value={producto}
         onChange={(e) => setProducto(e.target.value)}
-        style={inputStyle}
+        onKeyDown={(e) => e.key === "Enter" && agregarProducto()}
       />
 
-      <input
-        type="number"
-        placeholder="Precio"
-        value={precio}
-        onChange={(e) => setPrecio(e.target.value)}
-        style={inputStyle}
-      />
+      <button onClick={agregarProducto}>Agregar</button>
 
-      <input
-        type="number"
-        placeholder="Cantidad"
-        value={cantidad}
-        min="1"
-        onChange={(e) => setCantidad(e.target.value)}
-        style={inputStyle}
-      />
+      {carrito.length === 0 && <p>No hay productos agregados.</p>}
 
-      <button style={btn} onClick={agregar}>Agregar producto ➕</button>
-
-      <hr style={{ margin: "20px 0" }}/>
-
-      <h3>Carrito</h3>
-
-      {carrito.length === 0 && <p>No hay productos aún.</p>}
-
-      {carrito.map((p, i) => (
-        <div key={i} style={itemCard}>
-          <b>{p.nombre}</b>
-          <p>{p.cantidad} x ${p.precio}</p>
+      {carrito.map((p) => (
+        <div key={p.id} className="item">
+          <p>{p.nombre} — ${p.precio} x {p.cantidad}</p>
         </div>
       ))}
 
-      {/* botón final */}
+      <h3>Total: ${total}</h3>
+
       {carrito.length > 0 && (
-        <button style={{ ...btn, background:"purple" }} onClick={finalizarVenta}>
-          Finalizar venta y generar boleta 🧾
+        <button onClick={finalizarVenta} className="btn-finalizar">
+          Finalizar venta
         </button>
       )}
+
+      <hr />
+
+      <h3>📁 Exportar historial</h3>
+      <button onClick={exportarExcel}>Exportar a Excel</button>
     </div>
   );
 }
-
-/* ——— estilos rápidos ——— */
-const btn = {
-  width:"100%", padding:"12px", 
-  background:"violet", border:"none", marginTop:"8px",
-  color:"white", fontWeight:"bold", borderRadius:"6px"
-};
-
-const inputStyle = {
-  width:"100%", padding:"10px", marginTop:"10px", 
-  borderRadius:"6px", border:"none"
-};
-
-const itemCard = {
-  background:"#1a1a1a", borderRadius:"6px",
-  padding:"10px", marginTop:"10px"
-};
