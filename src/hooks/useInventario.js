@@ -1,44 +1,63 @@
 import { useState, useEffect } from "react";
+import productosBase from "../data/productos";
 
 /**
  * Hook de Inventario global usando localStorage
- * Controla productos, stock, precio y CRUD completo.
+ * Carga productos desde localStorage si existen,
+ * si no, toma la base de data/productos.js
  */
 
 export function useInventario() {
   const [productos, setProductos] = useState([]);
 
-  // Cargar inventario desde localStorage
+  // Cargar inventario al inicio
   useEffect(() => {
     const data = localStorage.getItem("inventario_ARstore");
-    if (data) setProductos(JSON.parse(data));
+    if (data) {
+      setProductos(JSON.parse(data));
+    } else {
+      // Primera vez: usar base
+      setProductos(productosBase);
+      localStorage.setItem("inventario_ARstore", JSON.stringify(productosBase));
+    }
   }, []);
 
-  // Guardar cada vez que cambie el inventario
+  // Guardar cada vez que cambia
   useEffect(() => {
-    localStorage.setItem("inventario_ARstore", JSON.stringify(productos));
+    if (productos.length > 0) {
+      localStorage.setItem("inventario_ARstore", JSON.stringify(productos));
+    }
   }, [productos]);
 
   // Agregar producto
   const agregarProducto = (producto) => {
-    setProductos([...productos, { id: Date.now(), ...producto }]);
+    setProductos((prev) => [
+      ...prev,
+      { id: Date.now(), ...producto },
+    ]);
   };
 
   // Editar producto
-  const editarProducto = (id, nuevoProducto) => {
-    setProductos(productos.map(p => p.id === id ? { ...p, ...nuevoProducto } : p ));
+  const editarProducto = (id, cambios) => {
+    setProductos((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, ...cambios } : p))
+    );
   };
 
   // Eliminar producto
   const eliminarProducto = (id) => {
-    setProductos(productos.filter(p => p.id !== id));
+    setProductos((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // Descontar stock desde Venta Rápida próximo paso
+  // Descontar stock (usado en Venta Rápida)
   const descontarStock = (id, cantidad) => {
-    setProductos(productos.map(p => 
-      p.id === id ? { ...p, stock: p.stock - cantidad } : p
-    ));
+    setProductos((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? { ...p, stock: Math.max(0, (p.stock || 0) - cantidad) }
+          : p
+      )
+    );
   };
 
   return {
@@ -46,6 +65,6 @@ export function useInventario() {
     agregarProducto,
     editarProducto,
     eliminarProducto,
-    descontarStock
+    descontarStock,
   };
 }
